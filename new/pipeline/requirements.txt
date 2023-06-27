@@ -1,0 +1,16 @@
+langchain
+fastapi
+transformers
+accelerate
+openai
+pypdf
+PyPDF2
+sentence_transformers
+InstructorEmbedding
+einops
+uvicorn
+pydantic
+chromadb
+python-multipart
+diffusers
+duckduckgo-search

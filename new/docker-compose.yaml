@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+
+  # nginx service
+  web:
+    container_name: "web"
+    image: nginx:alpine
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+    volumes:
+      - ./app/conf.d:/etc/nginx/conf.d
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - custom
+
+  # application service
+  app:
+    container_name: "app"
+    image: app
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    build:
+      context: ./pipeline
+      dockerfile: Dockerfile
+    command: uvicorn API_model:app --host 0.0.0.0 --port 8000 --timeout-keep-alive 300
+    ports:
+      - "8000:8000"
+    networks:
+      - custom
+    volumes:
+      - ./Training_materials:/Training_materials
+      - ./db:/db
+      - ./models:/models
+networks:
+  custom:
+    driver: bridge
